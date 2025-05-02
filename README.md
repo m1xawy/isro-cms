@@ -1,13 +1,19 @@
 
-## About iSRO Portal
+## About iSRO CMS v2
 
-iSRO Portal is A free and open-source project for the MMORPG SilkroadR Online (iSRO) Server files
+iSRO CMS v2 is A free and open-source project for the MMORPG Silkroad Online (iSRO & vSRO) Server files
 
-- More Dynamic.
-- Edit anything whatever from admin panel.
-- Everything cached.
-- supporting theme mode and all Languages.
-- Less Database requests.
+Whats new?-:
+- Supporting iSRO and vSRO files.
+- very clean & 300% faster
+- everything cached, no direct requests with your game dbs
+- more rankings added
+- fixed blue stats & iSRO wheeld items
+- job info added
+- new admin panel from scratch
+- supporting dark mode
+- supporting all Languages
+- supporting custom themes
 
 ## Documentation Link
 
@@ -18,7 +24,7 @@ iSRO Portal is A free and open-source project for the MMORPG SilkroadR Online (i
 - **[Documentation Link](#)**
 - **[Themes Store](https://mix-shop.tech/)**
 - **[iSRO Development Discord](https://discord.gg/HuJPdPSKA5)**
-- **[iSRO Portal Discord](#)**
+- **[iSRO CMS Discord](#)**
 - **[Youtube Channel](https://www.youtube.com/@m1xawy)**
 
 ## Installation Video
@@ -27,17 +33,22 @@ iSRO Portal is A free and open-source project for the MMORPG SilkroadR Online (i
 
 ## Quick Installation
 
--First be sure you have already installed iSRO-R Databases
+-First be sure you have already installed iSRO-R | vSRO Databases
 - Install Laragon Full [https://laragon.org](https://laragon.org)
 - Add PHP ^8.2 or higher [https://php.net](https://windows.php.net/download)
 - Add PHP Sql Server Drivers [https://microsoft.com](https://learn.microsoft.com/en-us/sql/connect/php/download-drivers-php-sql-server)
 - And Sometimes you should install ODBC Driver 17 [https://microsoft.com](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server)
 
 _Lets begin:
-1. Clone the repo
+1. Clone the repo for iSRO
 ```sh
 git clone https://github.com/m1xawy/isro-cms.git
 ```
+1. Clone the repo for vSRO
+```sh
+git clone -b vsro https://github.com/m1xawy/isro-cms.git
+```
+
 2. Install Laravel dependencies
 ```sh
 composer install
