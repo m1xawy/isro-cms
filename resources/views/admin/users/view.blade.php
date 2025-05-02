@@ -19,8 +19,8 @@
                     <table class="table table-striped">
                         <tbody>
                             <tr>
-                                <th scope="row">Portal JID</th>
-                                <td>{{ $user->PortalJID }}</td>
+                                <th scope="row">JID</th>
+                                <td>{{ $user->JID }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Username</th>
@@ -28,36 +28,19 @@
                             </tr>
                             <tr>
                                 <th scope="row">Email</th>
-                                <td>{{ $user->muUser->muEmail->EmailAddr }}</td>
+                                <td>{{ $user->Email }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">{{ __('Silk') }}</th>
-                                @php $cash = $user->muUser->getJCash() @endphp
-                                <td>{{ $cash->Silk }}</td>
+                                <td>{{ $user->getSkSilk->silk_own }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">{{ __('Premium Silk') }}</th>
-                                <td>{{ $cash->PremiumSilk }}</td>
+                                <th scope="row">{{ __('Gift Silk') }}</th>
+                                <td>{{ $user->getSkSilk->silk_gift }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">{{ __('Month Usage') }}</th>
-                                <td>{{ $cash->MonthUsage }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ __('3Month Usage') }}</th>
-                                <td>{{ $cash->ThreeMonthUsage }}</td>
-                            </tr>
-
-                            <tr>
-                                <th scope="row">VIP</th>
-                                <td>
-                                    @isset($user->muUser->muVIPInfo->VIPUserType)
-                                        <img src="{{ asset(config('global.ranking.vip_level.level')[$user->muUser->muVIPInfo->VIPLv]['icon']) }}" width="24" height="24" alt="">
-                                        <span>{{ config('global.ranking.vip_level.level')[$user->muUser->muVIPInfo->VIPLv]['name'] }}</span>
-                                    @else
-                                        <span>{{ __('None') }}</span>
-                                    @endisset
-                                </td>
+                                <th scope="row">{{ __('Point Silk') }}</th>
+                                <td>{{ $user->getSkSilk->silk_point }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -91,8 +74,9 @@
 
                                 <div class="col-md-10">
                                     <select class="form-select" name="type" aria-label="Default select example">
-                                        <option value="0">Normal</option>
-                                        <option value="3">Premium</option>
+                                        <option value="own">Normal</option>
+                                        <option value="gift">Gift</option>
+                                        <option value="point">Point</option>
                                     </select>
 
                                     @error('category')

@@ -48,31 +48,15 @@
                         </tr>
                         <tr>
                             <th scope="row">{{ __('Silk') }}</th>
-                            @php $cash = Auth::user()->muUser->getJCash() @endphp
-                            <td>{{ $cash->Silk }}</td>
+                            <td>{{ Auth::user()->tbUser->getSkSilk->silk_own }}</td>
                         </tr>
                         <tr>
-                            <th scope="row">{{ __('Premium Silk') }}</th>
-                            <td>{{ $cash->PremiumSilk }}</td>
+                            <th scope="row">{{ __('Gift Silk') }}</th>
+                            <td>{{ Auth::user()->tbUser->getSkSilk->silk_gift }}</td>
                         </tr>
                         <tr>
-                            <th scope="row">{{ __('Month Usage') }}</th>
-                            <td>{{ $cash->MonthUsage }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ __('3Month Usage') }}</th>
-                            <td>{{ $cash->ThreeMonthUsage }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ __('VIP') }}</th>
-                            <td>
-                                @isset(Auth::user()->muUser->muVIPInfo->VIPUserType)
-                                    <img src="{{ asset(config('global.ranking.vip_level.level')[Auth::user()->muUser->muVIPInfo->VIPLv]['icon']) }}" width="24" height="24" alt="">
-                                    <span>{{ config('global.ranking.vip_level.level')[Auth::user()->muUser->muVIPInfo->VIPLv]['name'] }}</span>
-                                @else
-                                    <span>{{ __('None') }}</span>
-                                @endisset
-                            </td>
+                            <th scope="row">{{ __('Point Silk') }}</th>
+                            <td>{{ Auth::user()->tbUser->getSkSilk->silk_point }}</td>
                         </tr>
                         </tbody>
                     </table>

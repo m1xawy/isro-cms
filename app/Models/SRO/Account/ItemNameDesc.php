@@ -26,7 +26,7 @@ class ItemNameDesc extends Model
      *
      * @var string
      */
-    protected $table = 'dbo._Rigid_ItemNameDesc';
+    protected $table = 'dbo._ItemNameDesc';
 
     /**
      * The attributes that are mass assignable.

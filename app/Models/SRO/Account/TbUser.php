@@ -47,39 +47,37 @@ class TbUser extends Model
      * @var array
      */
     protected $fillable = [
-        'PortalJID',
         'StrUserID',
-        'ServiceCompany',
+        'Name',
         'password',
-        'Active',
-        'UserIP',
-        'CountryCode',
-        'VisitDate',
-        'RegDate',
+        'Status',
+        'GMrank',
+        'Email',
+        'regtime',
+        'reg_ip',
         'sec_primary',
         'sec_content',
-        'sec_grade',
+        'AccPlayTime',
+        'LatestUpdateTime_ToPlayTime'
     ];
 
     protected $hidden = [
         'password'
     ];
 
-    public static function setGameAccount($jid, $username, $password, $ip)
+    public static function setGameAccount($username, $password, $email, $ip)
     {
         return self::create([
-            'PortalJID' => $jid,
-            'StrUserID' => $username,
-            'ServiceCompany' => 11,
+            'StrUserID' => strtolower($username),
+            'Name' => $username,
             'password' => md5($password),
-            'Active' => 1,
-            'UserIP' => $ip,
-            'CountryCode' => 'EG',
-            'VisitDate' => now(),
-            'RegDate' => now(),
+            'Status' => 1,
+            'GMrank' => 0,
+            'Email' => $email,
+            'regtime' => now(),
+            'reg_ip' => $ip,
             'sec_primary' => 3,
-            'sec_content' => 3,
-            'sec_grade' => 0,
+            'sec_content' => 3
         ]);
     }
 
@@ -90,18 +88,23 @@ class TbUser extends Model
         });
     }
 
+    public function getSkSilk()
+    {
+        return $this->belongsTo(SkSilk::class, 'JID', 'JID');
+    }
+
+    public function getSkSilkHistory()
+    {
+        return $this->hasMany(SkSilkBuyList::class, 'UserJID', 'JID');
+    }
+
     public function shardUser()
     {
         return $this->belongsToMany(Char::class, '_User', 'UserJID', 'CharID');
     }
 
-    public function muUser()
-    {
-        return $this->hasOne(MuUser::class, 'JID', 'PortalJID');
-    }
-
     public function user()
     {
-        return $this->belongsTo(User::class, 'jid', 'PortalJID');
+        return $this->belongsTo(User::class, 'jid', 'JID');
     }
 }

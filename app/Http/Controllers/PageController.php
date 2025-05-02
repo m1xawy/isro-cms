@@ -58,6 +58,7 @@ class PageController extends Controller
         $unique_ranking = LogInstanceWorldInfo::getUniqueRanking(9999, 0);
         $unique_list = config('global.ranking.unique_points');
 
+        $data = [];
         foreach ($unique_kill as $value) {
             $data[$value->Value][] = $value;
         }

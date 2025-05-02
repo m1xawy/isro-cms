@@ -63,7 +63,7 @@ class Char extends Model
 
     public static function getPlayerRanking($limit = 25, $CharID = 0, $CharName = '')
     {
-        return Cache::remember('ranking_player_'.$limit.'_'.$CharID.'_'.$CharName, config('global.general.cache.data.ranking-player'), function () use ($CharName, $CharID, $limit) {
+        return Cache::remember("ranking_player_{$limit}_{$CharID}_{$CharName}", now()->addMinutes(config('global.general.cache.data.ranking-player')), function () use ($CharName, $CharID, $limit) {
             return self::select(
                 '_Char.CharID',
                 '_Char.CharName16',
@@ -78,8 +78,8 @@ class Char extends Model
                 '_Char.MP',
                 '_Char.Strength',
                 '_Char.Intellect',
-                '_UserTradeConflictJob.JobType',
-                '_CharTradeConflictJob.JobLevel',
+                '_CharTrijob.JobType',
+                '_CharTrijob.Level',
 
                 DB::raw("ISNULL((
                     SUM(ISNULL(_BindingOptionWithItem.nOptValue, 0)) +
@@ -101,9 +101,8 @@ class Char extends Model
                 })
 
                 ->join('_User', '_User.CharID', '=', '_Char.CharID')
-                ->join('_UserTradeConflictJob', '_UserTradeConflictJob.UserJID', '=', '_User.UserJID')
-                ->leftJoin('_CharTradeConflictJob', function ($join) {
-                    $join->on('_CharTradeConflictJob.CharID', '=', '_Char.CharID');
+                ->leftJoin('_CharTrijob', function ($join) {
+                    $join->on('_CharTrijob.CharID', '=', '_Char.CharID');
                 })
 
                 ->where('_Inventory.Slot', '<', 13)
@@ -132,8 +131,8 @@ class Char extends Model
                     '_Char.MP',
                     '_Char.Strength',
                     '_Char.Intellect',
-                    '_UserTradeConflictJob.JobType',
-                    '_CharTradeConflictJob.JobLevel',
+                    '_CharTrijob.JobType',
+                    '_CharTrijob.Level',
                 )
                 ->orderByDesc('ItemPoints')
                 ->orderByDesc('_Char.CurLevel')

@@ -63,21 +63,6 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
-        DB::beginTransaction();
-        try {
-            MuEmail::where('JID', $request->user()->jid)->update(['EmailAddr' => $request->user()->email]);
-            if(config('settings.register_confirm')) {
-                MuhAlteredInfo::where('JID', $request->user()->jid)->update(['EmailAddr' => $request->user()->email, 'EmailReceptionStatus'=>'N', 'EmailCertificationStatus'=>'N']);
-            } else {
-                MuhAlteredInfo::where('JID', $request->user()->jid)->update(['EmailAddr' => $request->user()->email, 'EmailReceptionStatus'=>'Y', 'EmailCertificationStatus'=>'Y']);
-            }
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['email' => ["Something went wrong, Please try again later."]]);
-        }
-        DB::commit();
-
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');

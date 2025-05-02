@@ -36,7 +36,6 @@ class Guild extends Model
                 '_Guild.Lvl',
                 '_Guild.GatheredSP',
                 '_Guild.FoundationDate',
-                DB::raw("CONVERT(VARCHAR(MAX), _GuildCrest.CrestBinary, 2) AS CrestIcon"),
                 DB::raw("(SELECT CharID FROM _GuildMember WHERE GuildID = _Guild.ID AND MemberClass = 0) AS LeaderID"),
                 DB::raw("(SELECT CharName FROM _GuildMember WHERE GuildID = _Guild.ID AND MemberClass = 0) AS LeaderName"),
                 DB::raw("(SELECT COUNT(CharID) FROM _GuildMember WHERE GuildID = _Guild.ID) AS TotalMember"),
@@ -58,9 +57,6 @@ class Guild extends Model
                         ->where('_BindingOptionWithItem.nOptValue', '>', 0)
                         ->where('_BindingOptionWithItem.bOptType', '=', 2);
                 })
-                ->leftJoin('_GuildCrest', function ($join) {
-                    $join->on('_GuildCrest.GuildID', '=', '_Guild.ID');
-                })
                 ->where('_Inventory.Slot', '<', 13)
                 ->where('_Inventory.Slot', '!=', 8)
                 ->where('_Inventory.Slot', '!=', 7)
@@ -78,7 +74,6 @@ class Guild extends Model
                     '_Guild.Lvl',
                     '_Guild.GatheredSP',
                     '_Guild.FoundationDate',
-                    '_GuildCrest.CrestBinary'
                 )
                 ->orderByDesc('ItemPoints')
                 ->orderByDesc('_Guild.Lvl')

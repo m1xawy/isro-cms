@@ -52,8 +52,7 @@ class NewPasswordController extends Controller
 
                 DB::beginTransaction();
                 try {
-                    MuUser::where('JID', $user->jid)->update(['UserPwd' => md5($request->password)]);
-                    TbUser::where('PortalJID', $user->jid)->update(['password' => md5($request->password)]);
+                    TbUser::where('JID', $user->jid)->update(['password' => md5($request->password)]);
 
                 } catch (Exception $e) {
                     DB::rollBack();

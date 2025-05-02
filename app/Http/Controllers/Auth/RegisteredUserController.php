@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\SRO\Account\SkSilk;
 use App\Models\SRO\Account\TbUser;
 use App\Models\SRO\Portal\AphChangedSilk;
 use App\Models\SRO\Portal\AuhAgreedService;
@@ -41,8 +42,8 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'username' => ['required', 'regex:/^[A-Za-z0-9]*$/', 'min:6', 'max:16', 'unique:'.User::class, 'unique:'.MuUser::class.',UserID', 'unique:'.TbUser::class.',StrUserID'],
-            'email' => ['required', 'string', 'email', 'max:70', 'unique:'.MuEmail::class.',EmailAddr'],
+            'username' => ['required', 'regex:/^[A-Za-z0-9]*$/', 'min:6', 'max:16', 'unique:'.User::class, 'unique:'.TbUser::class.',StrUserID'],
+            'email' => ['required', 'string', 'email', 'max:70', 'unique:'.TbUser::class.',Email'],
             'password' => ['required', 'string', 'min:6', 'max:32', 'confirmed', Rules\Password::defaults()],
             'g-recaptcha-response' => [
                 Rule::requiredIf(function () {
@@ -54,24 +55,11 @@ class RegisteredUserController extends Controller
 
         DB::beginTransaction();
         try {
-
-            //Fixing local registration
-            $userBinIP = ($request->ip() == "::1") ? ip2long('127.0.0.1') : ip2long($request->ip());
-
-            $portalUser = MuUser::setPortalAccount($request->username, $request->password);
-            MuEmail::setEmail($portalUser->JID, $request->email);
-            MuhAlteredInfo::setAlteredInfo($portalUser->JID, $request->username, $request->email, $userBinIP);
-            AuhAgreedService::setAgreedService($portalUser->JID, $userBinIP);
-            MuJoiningInfo::setJoiningInfo($portalUser->JID, $userBinIP);
-            MuVIPInfo::setVIPInfo($portalUser->JID);
-
-            //type 1 = silk, type 3 = premium silk
-            //AphChangedSilk::setChangedSilk($portalUser->JID, 1, 0);
-            //AphChangedSilk::setChangedSilk($portalUser->JID, 3, 0);
-            TbUser::setGameAccount($portalUser->JID, $request->username, $request->password, $request->ip());
+            $tbUser = TbUser::setGameAccount($request->username, $request->password, $request->email, $request->ip());
+            SkSilk::setSkSilk($tbUser->JID, 0, 0);
 
             $user = User::create([
-                'jid' => $portalUser->JID,
+                'jid' => $tbUser->JID,
                 'username' => $request->username,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),

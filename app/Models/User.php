@@ -67,7 +67,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function tbUser()
     {
-        return $this->hasOne(TbUser::class, 'PortalJID', 'jid');
+        return $this->hasOne(TbUser::class, 'JID', 'jid');
     }
 
     public function news()

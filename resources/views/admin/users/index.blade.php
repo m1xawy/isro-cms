@@ -26,7 +26,7 @@
             <table class="table table-striped table-sm">
                 <thead>
                     <tr>
-                        <th scope="col">Portal JID</th>
+                        <th scope="col">JID</th>
                         <th scope="col">Username</th>
                         <th scope="col">Email</th>
                         <th scope="col">Options</th>
@@ -35,9 +35,9 @@
                 <tbody>
                     @forelse($data as $value)
                         <tr>
-                            <td>{{ $value->PortalJID }}</td>
+                            <td>{{ $value->JID }}</td>
                             <td>{{ $value->StrUserID }}</td>
-                            <td>{{ $value->muUser->muEmail->EmailAddr }}</td>
+                            <td>{{ $value->Email }}</td>
                             <td>
                                 <a href="{{ route('admin.users.view', $value->JID) }}" class="btn btn-secondary btn-sm">View</a>
                             </td>

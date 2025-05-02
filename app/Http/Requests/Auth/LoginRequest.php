@@ -56,9 +56,9 @@ class LoginRequest extends FormRequest
             }
 
             User::create([
-                'jid' => $tbUser->PortalJID,
+                'jid' => $tbUser->JID,
                 'username' => $this->get('username'),
-                'email' => $tbUser->muUser->muEmail->EmailAddr,
+                'email' => $tbUser->Email,
                 'password' => Hash::make($this->get('password')),
             ]);
         }

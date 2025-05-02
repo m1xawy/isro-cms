@@ -92,12 +92,7 @@
                                 <div class="" id="display-inventory-set">
                                     @include('ranking.character.partials.inventory.inventory-view', ['inventorySetList' => $inventory_set])
                                 </div>
-                                <div class="d-none" id="display-inventory-avatar">
-                                    @include('ranking.character.partials.inventory.inventory-job-view', ['inventoryJobList' => $inventory_job])
-                                </div>
                                 <div class="" id="display-inventory-avatar-accessory">
-                                    <button id="display-inventory-switch" data-type="set" class="btn btn-secondary position-absolute" style="top: -50px;">{{ __('Job Equip') }}</button>
-
                                     <p class="mb-0" id="display-inventory-avatar-accessory-label">{{ __('Accessories') }}</p>
                                     @include('ranking.character.partials.inventory.inventory-avatar-view', ['inventoryAvatarList' => $inventory_avatar])
                                 </div>

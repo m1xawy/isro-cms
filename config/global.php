@@ -323,7 +323,7 @@ return [
                 'route' => 'ranking.job-thieve',
             ],
             'ranking_job_traders' => [
-                'enable' => false,
+                'enable' => true,
                 'name' => 'Traders',
                 'icon' => 'fa fa-users',
                 'route' => 'ranking.job-trader',
