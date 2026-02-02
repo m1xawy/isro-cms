@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1f09234c007a5a97e5a53e2985a5cfd",
+    "content-hash": "8dc1090fb1cd779fcb0ee8e3664a38a3",
     "packages": [
         {
             "name": "anhskohbo/no-captcha",
@@ -5856,6 +5856,39 @@
             "time": "2024-11-21T01:49:47+00:00"
         },
         {
+            "name": "vote4rewards/pingback",
+            "version": "1.2.3",
+            "dist": {
+                "type": "zip",
+                "url": "https://composer.vote4rewards.de/dist/vote4rewards/pingback/vote4rewards-pingback-35a4cca0b078087dc037b91cfec4160a4c85fe34-path.zip",
+                "shasum": "8f7b0888cd7174b68e1480fdadcbe947c5d8ab12"
+            },
+            "require": {
+                "php": ">=8.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Vote4Rewards\\Pingback\\": "src/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "vote4rewards Team",
+                    "email": "composer@vote4rewards.de"
+                }
+            ],
+            "description": "Pingback for vote4rewards platform"
+        },
+        {
             "name": "webmozart/assert",
             "version": "1.11.0",
             "source": {
@@ -8410,12 +8443,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }

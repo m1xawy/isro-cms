@@ -71,4 +71,15 @@ return [
         'reward' => 5,
         'timeout' => 12,
     ],
+    'vote4rewards' => [
+        'enabled' => true, //Postback url: https://localhost/postback/vote4rewards
+        'name' => 'Vote4Rewards',
+        'route' => 'vote4rewards',
+        'image' => 'https://vote4rewards.de/vote4rewards_small_banner.png',
+        'webhook_secret' => '0EKA5t4XD0vGrNCnkNzFZULVVm3ighm0', // example: Q7A9DA2xVdkL3rP0B8mNfH5S3LJcWgUy
+        'url' => 'https://vote4rewards.de/vote/<Server UUID FROM vote4rewards>?rewarder={JID}', // example: https://vote4rewards.de/vote/fc5296a9-814d-406b-aeba-68d83ff414bb?rewarder={JID}
+        'ip' => '91.98.130.153',
+        'reward' => 2,
+        'timeout' => 6,
+    ],
 ];
