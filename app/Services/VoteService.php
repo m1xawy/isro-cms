@@ -44,7 +44,7 @@ class VoteService
         }
 
         DB::transaction(function () use ($user, $rewardAmount, $config, $jid, $remoteIp, $now, $timeout) {
-            TbUser::updateSilk($user->jid, 0, $rewardAmount);
+            TbUser::updateSilk($user->jid, $config['type'] ?? 0, $rewardAmount);
 
             Donate::log([
                 'method' => "Vote [{$config['name']}]",
@@ -93,7 +93,7 @@ class VoteService
         }
 
         DB::transaction(function () use ($user, $rewardAmount, $config, $jid, $remoteIp, $now, $timeout) {
-            TbUser::updateSilk($user->jid, 0, $rewardAmount);
+            TbUser::updateSilk($user->jid, $config['type'] ?? 0, $rewardAmount);
 
             Donate::log([
                 'method' => "Vote [{$config['name']}]",
@@ -138,7 +138,7 @@ class VoteService
         }
 
         DB::transaction(function () use ($user, $rewardAmount, $config, $jid, $remoteIp, $now, $timeout) {
-            TbUser::updateSilk($user->jid, 0, $rewardAmount);
+            TbUser::updateSilk($user->jid, $config['type'] ?? 0, $rewardAmount);
 
             Donate::log([
                 'method' => "Vote [{$config['name']}]",
@@ -183,7 +183,7 @@ class VoteService
         }
 
         DB::transaction(function () use ($user, $rewardAmount, $config, $jid, $remoteIp, $now, $timeout) {
-            TbUser::updateSilk($user->jid, 0, $rewardAmount);
+            TbUser::updateSilk($user->jid, $config['type'] ?? 0, $rewardAmount);
 
             Donate::log([
                 'method' => "Vote [{$config['name']}]",
@@ -232,7 +232,7 @@ class VoteService
         }
 
         DB::transaction(function () use ($user, $rewardAmount, $config, $jid, $remoteIp, $now, $timeout) {
-            TbUser::updateSilk($user->jid, 0, $rewardAmount);
+            TbUser::updateSilk($user->jid, $config['type'] ?? 0, $rewardAmount);
 
             Donate::log([
                 'method' => "Vote [{$config['name']}]",
@@ -277,7 +277,7 @@ class VoteService
         }
 
         DB::transaction(function () use ($user, $rewardAmount, $config, $jid, $remoteIp, $now, $timeout) {
-            TbUser::updateSilk($user->jid, 0, $rewardAmount);
+            TbUser::updateSilk($user->jid, $config['type'] ?? 0, $rewardAmount);
 
             Donate::log([
                 'method' => "Vote [{$config['name']}]",
@@ -322,7 +322,7 @@ class VoteService
         }
 
         DB::transaction(function () use ($user, $rewardAmount, $config, $jid, $remoteIp, $now, $timeout) {
-            TbUser::updateSilk($user->jid, 0, $rewardAmount);
+            TbUser::updateSilk($user->jid, $config['type'] ?? 0, $rewardAmount);
 
             Donate::log([
                 'method' => "Vote [{$config['name']}]",
@@ -374,7 +374,7 @@ class VoteService
         }
 
         DB::transaction(function () use ($user, $rewardAmount, $config, $jid, $remoteIp, $now, $timeout) {
-            TbUser::updateSilk($user->jid, 0, $rewardAmount);
+            TbUser::updateSilk($user->jid, $config['type'] ?? 0, $rewardAmount);
 
             Donate::log([
                 'method' => "Vote [{$config['name']}]",

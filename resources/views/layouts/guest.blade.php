@@ -17,7 +17,6 @@
     <meta property="og:description" content="@yield('meta_description', config('app.description'))">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:image" content="{{ asset(config('global.site_logo')) }}">
-
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('title') - {{ config('app.name') }}">
     <meta name="twitter:description" content="@yield('meta_description', config('app.description'))">

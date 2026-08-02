@@ -7,7 +7,7 @@
             <h2 class="mt-0">{{ __('Downloads') }}</h2>
             <div class="row">
                 @forelse($data as $row)
-                    <div class="col-lg-12">
+                    <div class="col-lg-6">
                         <div class="card mb-3">
                             <div class="card-body d-flex flex-row align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">

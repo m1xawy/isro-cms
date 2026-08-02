@@ -501,6 +501,20 @@
                                min="0" value="{{ $referral['minimum_redeem'] ?? 25 }}">
                         <div class="form-text">{{ __('Minimum points required before a user can redeem.') }}</div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ __('Reward Silk Type') }}</label>
+                        <select class="form-select" id="referral_reward_type">
+                            @if(config('global.server.version') === 'vSRO')
+                                <option value="0" {{ ($referral['reward_type'] ?? 0) == 0 ? 'selected' : '' }}>{{ __('Normal') }}</option>
+                                <option value="1" {{ ($referral['reward_type'] ?? 0) == 1 ? 'selected' : '' }}>{{ __('Gift') }}</option>
+                                <option value="2" {{ ($referral['reward_type'] ?? 0) == 2 ? 'selected' : '' }}>{{ __('Point') }}</option>
+                            @else
+                                <option value="3" {{ ($referral['reward_type'] ?? 3) == 3 ? 'selected' : '' }}>{{ __('Premium') }}</option>
+                                <option value="1" {{ ($referral['reward_type'] ?? 3) == 1 ? 'selected' : '' }}>{{ __('Normal') }}</option>
+                            @endif
+                        </select>
+                        <div class="form-text">{{ __('Silk type awarded when a user redeems their referral points.') }}</div>
+                    </div>
 
                     <input type="hidden" id="referral" name="referral">
                 </div>
@@ -588,6 +602,20 @@
                                            min="0" value="{{ $voteItem['reward'] ?? 5 }}">
                                 </div>
                                 <div class="mb-3">
+                                    <label class="form-label">{{ __('Reward Silk Type') }}</label>
+                                    <select class="form-select" id="vote_{{ $voteKey }}_type">
+                                        @if(config('global.server.version') === 'vSRO')
+                                            <option value="0" {{ ($voteItem['type'] ?? 0) == 0 ? 'selected' : '' }}>{{ __('Normal') }}</option>
+                                            <option value="1" {{ ($voteItem['type'] ?? 0) == 1 ? 'selected' : '' }}>{{ __('Gift') }}</option>
+                                            <option value="2" {{ ($voteItem['type'] ?? 0) == 2 ? 'selected' : '' }}>{{ __('Point') }}</option>
+                                        @else
+                                            <option value="3" {{ ($voteItem['type'] ?? 3) == 3 ? 'selected' : '' }}>{{ __('Premium') }}</option>
+                                            <option value="1" {{ ($voteItem['type'] ?? 3) == 1 ? 'selected' : '' }}>{{ __('Normal') }}</option>
+                                        @endif
+                                    </select>
+                                    <div class="form-text">{{ __('Silk type awarded when a player votes on this site.') }}</div>
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label">{{ __('Timeout (hours)') }}</label>
                                     <input type="number" class="form-control" id="vote_{{ $voteKey }}_timeout"
                                            min="1" value="{{ $voteItem['timeout'] ?? 12 }}">
@@ -625,6 +653,7 @@
             document.getElementById('referral').value = JSON.stringify({
                 enabled:        document.getElementById('referral_enabled').checked,
                 reward_points:  parseInt(document.getElementById('referral_reward_points').value)  || 0,
+                reward_type:    parseInt(document.getElementById('referral_reward_type').value)    || 0,
                 minimum_redeem: parseInt(document.getElementById('referral_minimum_redeem').value) || 0,
             });
         }
@@ -774,6 +803,7 @@
                     url:     document.getElementById('vote_' + key + '_url')?.value     ?? '',
                     image:   document.getElementById('vote_' + key + '_image')?.value   ?? '',
                     reward:  parseInt(document.getElementById('vote_' + key + '_reward')?.value)  || 5,
+                    type:    parseInt(document.getElementById('vote_' + key + '_type')?.value)    || 0,
                     timeout: parseInt(document.getElementById('vote_' + key + '_timeout')?.value) || 12,
                     ip:      document.getElementById('vote_' + key + '_ip')?.value      ?? '',
                 };

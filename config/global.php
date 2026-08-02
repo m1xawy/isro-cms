@@ -79,6 +79,7 @@ return [
     'referral' => [
         'enabled' => false,
         'reward_points' => 5,
+        'reward_type' => 0,
         'minimum_redeem' => 25,
     ],
     'tickets' => [

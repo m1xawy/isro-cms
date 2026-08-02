@@ -9,6 +9,7 @@ return [
         'url' => 'https://www.xtremetop100.com/in.php?site=SERVER_ID&postback={JID}',
         'ip' => '137.74.41.178, 2001:41d0:305:2100::413b',
         'reward' => 5,
+        'type' => 0,
         'timeout' => 12,
     ],
     'gtop100' => [
@@ -19,6 +20,7 @@ return [
         'url' => 'https://gtop100.com/Silkroad-Online/SERVER_ID?vote=1&pingUsername={JID}',
         'ip' => '213.233.110.198, 213.233.110.199',
         'reward' => 5,
+        'type' => 0,
         'timeout' => 12,
     ],
     'topg' => [
@@ -29,6 +31,7 @@ return [
         'url' => 'https://topg.org/silkroad-private-servers/in-SERVER_ID-{JID}',
         'ip' => '54.36.225.177',
         'reward' => 5,
+        'type' => 0,
         'timeout' => 12,
     ],
     'top100arena' => [
@@ -39,6 +42,7 @@ return [
         'url' => 'https://www.top100arena.com/listing/SERVER_ID/vote?incentive={JID}',
         'ip' => '3.86.48.116',
         'reward' => 5,
+        'type' => 0,
         'timeout' => 12,
     ],
     'arenatop100' => [
@@ -49,6 +53,7 @@ return [
         'url' => 'https://www.arena-top100.com/index.php?a=in&u=SERVER_ID&id={JID}',
         'ip' => '184.154.46.76',
         'reward' => 5,
+        'type' => 0,
         'timeout' => 12,
     ],
     'silkroadservers' => [
@@ -59,6 +64,7 @@ return [
         'url' => 'https://silkroad-servers.com/index.php?a=in&u=SERVER_ID&id={JID}',
         'ip' => '116.203.217.217',
         'reward' => 5,
+        'type' => 0,
         'timeout' => 12,
     ],
     'privateserver' => [
@@ -69,6 +75,7 @@ return [
         'url' => 'https://private-server.ws/index.php?a=in&u=SERVER_ID&id={JID}',
         'ip' => '116.203.234.215',
         'reward' => 5,
+        'type' => 0,
         'timeout' => 12,
     ],
 ];

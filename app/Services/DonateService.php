@@ -261,7 +261,7 @@ class DonateService
             return response('OK', 200);
         }
 
-        $donate = Donate::where('transaction_id', $session['id'])->where('status', 'pending')->first();
+        $donate = Donate::where('transaction_id', (string) $session['id'])->where('status', 'pending')->first();
         if (!$donate) {
             return response('Transaction not found or already processed.', 409);
         }
@@ -364,7 +364,7 @@ class DonateService
             return response('OK', 200);
         }
 
-        $donate = Donate::where('transaction_id', $data['invoice_id'])->where('status', 'pending')->first();
+        $donate = Donate::where('transaction_id', (string) $data['invoice_id'])->where('status', 'pending')->first();
         if (!$donate) {
             return response('Transaction not found or already processed.', 409);
         }
@@ -483,7 +483,7 @@ class DonateService
             return response('Not paid', 200);
         }
 
-        $donate = Donate::where('transaction_id', $data['invoice_id'])->where('status', 'pending')->first();
+        $donate = Donate::where('transaction_id', (string) $data['invoice_id'])->where('status', 'pending')->first();
         if (!$donate) {
             return response('Transaction not found or already processed.', 409);
         }
@@ -676,7 +676,7 @@ class DonateService
             return response('Invalid Hash', 400);
         }
 
-        if (Donate::where('transaction_id', $data['transaction_id'])->where('status', 'success')->exists()) {
+        if (Donate::where('transaction_id', (string) $data['transaction_id'])->where('status', 'success')->exists()) {
             return response('Transaction already processed.', 409);
         }
 

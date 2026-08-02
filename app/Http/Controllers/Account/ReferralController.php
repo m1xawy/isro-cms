@@ -55,7 +55,7 @@ class ReferralController extends Controller
         }
 
         DB::transaction(function () use ($totalPoints, $user, $invites) {
-            TbUser::updateSilk($user->jid, 0, $totalPoints);
+            TbUser::updateSilk($user->jid, config('global.referral.reward_type', 0), $totalPoints);
 
             Donate::log([
                 'method' => 'Voucher',

@@ -56,7 +56,7 @@ class ViewServiceProvider extends ServiceProvider
             if(config('widgets.global_history.enabled', false)) {
                 View::composer(['partials.global-history'], function ($view) {
                     $view->with([
-                        'globalsHistory' => LogChatMessage::getGlobalsHistory(5),
+                        'globalsHistory' => LogChatMessage::getGlobalsHistory(config('widgets.global_history.limit', 5)),
                     ]);
                 });
             }
@@ -64,7 +64,7 @@ class ViewServiceProvider extends ServiceProvider
             if(config('widgets.unique_history.enabled', false)) {
                 View::composer(['partials.unique-history'], function ($view) {
                     $view->with([
-                        'uniqueHistory' => LogInstanceWorldInfo::getUniquesKill(5),
+                        'uniqueHistory' => LogInstanceWorldInfo::getUniquesKill(config('widgets.unique_history.limit', 5)),
                     ]);
                 });
             }
@@ -72,7 +72,7 @@ class ViewServiceProvider extends ServiceProvider
             if(config('widgets.top_player.enabled', false)) {
                 View::composer(['partials.top-player'], function ($view) {
                     $view->with([
-                        'topPlayer' => Char::getPlayerRanking(5),
+                        'topPlayer' => Char::getPlayerRanking(config('widgets.top_player.limit', 5)),
                     ]);
                 });
             }
@@ -80,7 +80,7 @@ class ViewServiceProvider extends ServiceProvider
             if(config('widgets.top_guild.enabled', false)) {
                 View::composer(['partials.top-guild'], function ($view) {
                     $view->with([
-                        'topGuild' => Guild::getGuildRanking(5),
+                        'topGuild' => Guild::getGuildRanking(config('widgets.top_guild.limit', 5)),
                     ]);
                 });
             }
@@ -88,7 +88,7 @@ class ViewServiceProvider extends ServiceProvider
             if(config('widgets.item_plus.enabled', false)) {
                 View::composer(['partials.item-plus'], function ($view) {
                     $view->with([
-                        'soxPlus' => LogEventItem::getLogEventItem('plus', 8, 8, 'Seal of Sun', null, 5),
+                        'soxPlus' => LogEventItem::getLogEventItem('plus', 8, 8, 'Seal of Sun', null, config('widgets.item_plus.limit', 5)),
                     ]);
                 });
             }
@@ -96,7 +96,7 @@ class ViewServiceProvider extends ServiceProvider
             if(config('widgets.item_drop.enabled', false)) {
                 View::composer(['partials.item-drop'], function ($view) {
                     $view->with([
-                        'soxDrop' => LogEventItem::getLogEventItem('drop', null, 8, 'Seal of Sun', null, 5),
+                        'soxDrop' => LogEventItem::getLogEventItem('drop', null, 8, 'Seal of Sun', null, config('widgets.item_drop.limit', 5)),
                     ]);
                 });
             }
@@ -104,7 +104,7 @@ class ViewServiceProvider extends ServiceProvider
             if(config('widgets.pvp_kill.enabled', false)) {
                 View::composer(['partials.pvp-kill'], function ($view) {
                     $view->with([
-                        'pvpKills' => LogEventChar::getKillLogs('pvp', 5),
+                        'pvpKills' => LogEventChar::getKillLogs('pvp', config('widgets.pvp_kill.limit', 5)),
                     ]);
                 });
             }
@@ -112,7 +112,7 @@ class ViewServiceProvider extends ServiceProvider
             if(config('widgets.job_kill.enabled', false)) {
                 View::composer(['partials.job-kill'], function ($view) {
                     $view->with([
-                        'jobKills' => LogEventChar::getKillLogs('job', 5),
+                        'jobKills' => LogEventChar::getKillLogs('job', config('widgets.job_kill.limit', 5)),
                     ]);
                 });
             }

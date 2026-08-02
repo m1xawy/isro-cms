@@ -69,6 +69,10 @@
                 </ul>
                 <ul class="navbar-nav">
                     @if(config('global.dark_mode') == 'switch')
+                    @push('scripts')
+                        <script src="https://getbootstrap.com/docs/5.3/assets/js/color-modes.js"></script>
+                    @endpush
+
                     <li class="nav-item dropdown bd-mode-toggle">
                         <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
                             <symbol id="check2" viewBox="0 0 16 16">
@@ -131,10 +135,6 @@
                     @endif
 
                     @if(config('global.default_locale') == 'switch')
-                    @push('scripts')
-                        <script src="https://getbootstrap.com/docs/5.3/assets/js/color-modes.js"></script>
-                    @endpush
-
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="{{ asset(config('global.languages')[App::getLocale()]['image']) }}" alt="" style="width: 1em; height: 1em;">
