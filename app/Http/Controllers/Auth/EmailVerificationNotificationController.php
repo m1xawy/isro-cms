@@ -17,7 +17,7 @@ class EmailVerificationNotificationController extends Controller
             return redirect()->intended(route('account', absolute: false));
         }
 
-        if (!config('global.register_confirm') || $request->user()?->role?->is_admin) {
+        if (!config('global.register_confirm')) {
             return redirect()->intended(route('account', absolute: false));
         }
 
