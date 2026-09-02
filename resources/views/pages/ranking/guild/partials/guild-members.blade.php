@@ -10,10 +10,9 @@
             </tr>
         </thead>
         <tbody>
-            @php $i = 1; @endphp
-            @forelse($data->members as $row)
+            @forelse($data->members as $key => $row)
                 <tr>
-                    <td>{{ $i }}</td>
+                    <td>{{ $key + 1 }}</td>
                     <td>
                         @if($row->RefObjID > 2000)
                             <img src="{{ asset(config('ranking.character_race')[1]['image']) }}" width="16" height="16" alt=""/>
@@ -34,7 +33,6 @@
                     </td>
                     <td>{{ $row->GP_Donation }}</td>
                 </tr>
-                @php $i++ @endphp
             @empty
                 <tr>
                     <td colspan="5" class="text-center">{{ __('No Records Found!') }}</td>

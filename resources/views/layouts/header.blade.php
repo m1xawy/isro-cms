@@ -51,9 +51,6 @@
                             @if(config("global.logs.job_kill"))
                                 <li><a class="dropdown-item" href="{{ route('logs.job-kill') }}">{{ __('Job Kills') }}</a></li>
                             @endif
-                            @if(!config("global.logs.enabled"))
-                                <li><a class="dropdown-item" href="#">{{ __('None') }}</a></li>
-                            @endif
                         </ul>
                     </li>
                     <li class="nav-item dropdown">

@@ -11,8 +11,6 @@
                             <h2 class="mb-0">
                                 @if(isset($data->Crest))
                                     <img src="{{ route('ranking.guild.crest', ['bin' => $data->Crest]) }}" alt="" width="32" height="32">
-                                @else
-                                    <img src="https://ui-avatars.com/api/?name={{ $data->Name }}&background=random&color=fff&bold=true&size=32" alt="">
                                 @endif
                                 {{ $data->Name }}
                             </h2>

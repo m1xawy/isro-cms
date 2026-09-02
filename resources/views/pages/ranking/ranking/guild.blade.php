@@ -30,8 +30,6 @@
                     <td>
                         @if(isset($row->CrestIcon))
                             <img src="{{ route('ranking.guild.crest', ['bin' => $row->CrestIcon]) }}" alt="" width="16" height="16">
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ $row->Name }}&background=random&color=fff&bold=true&size=16" alt="">
                         @endif
                         <a href="{{ route('ranking.guild.view', ['name' => $row->Name]) }}" class="text-decoration-none">{{ $row->Name }}</a>
                     </td>

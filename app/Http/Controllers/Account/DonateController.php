@@ -82,7 +82,7 @@ class DonateController extends Controller
     public function history(Request $request): View
     {
         if (config('global.server.version') === 'vSRO') {
-            $data = SkSilkBuyList::getSilkHistory($request->user()->jid, 25, $request->get('page', 1));
+            $data = SkSilkBuyList::getSilkBuyList($request->user()->jid, 25, $request->get('page', 1));
         }else {
             $data = AphChangedSilk::getSilkHistory($request->user()->jid, 25, $request->get('page', 1));
         }
