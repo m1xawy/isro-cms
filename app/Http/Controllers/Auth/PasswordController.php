@@ -47,7 +47,7 @@ class PasswordController extends Controller
         $user = $request->user();
         $token = Cache::get('verify_code_'.$user->email);
 
-        if (!$token || $request->verify_code_password !== $token) {
+        if (!$token || (int) $request->verify_code_password !== $token) {
             return back()->withErrors([
                 'verify_code_password' => 'The provided verification code is invalid or expired.',
             ]);

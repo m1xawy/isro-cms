@@ -128,7 +128,7 @@ class AuthenticatedSessionController extends Controller
 
         $token = Cache::get('verify_code_'.$user->email);
 
-        if (!$token || $token !== $request->code) {
+        if (!$token || $token !== (int) $request->code) {
             return back()->withErrors(['code' => 'Invalid or expired verification code']);
         }
 

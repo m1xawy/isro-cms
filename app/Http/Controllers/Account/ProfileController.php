@@ -75,7 +75,7 @@ class ProfileController extends Controller
         $originalEmail = $user->email;
         $token = Cache::get('verify_code_'.$user->email);
 
-        if (!$token || $request->verify_code_email !== $token) {
+        if (!$token || (int) $request->verify_code_email !== $token) {
             return back()->withErrors(['verify_code_email' => 'The provided verification code is invalid or expired.',]);
         }
 
@@ -154,7 +154,7 @@ class ProfileController extends Controller
         $user = $request->user();
         $token = Cache::get('verify_code_'.$user->email);
 
-        if (!$token || $request->verify_code_secondary !== $token) {
+        if (!$token || (int) $request->verify_code_secondary !== $token) {
             return back()->withErrors(['verify_code_secondary' => 'The provided verification code is invalid or expired.']);
         }
 

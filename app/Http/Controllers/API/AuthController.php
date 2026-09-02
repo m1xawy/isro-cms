@@ -209,7 +209,7 @@ class AuthController extends Controller
 
         $cached = Cache::get('verify_code_'.$user->email);
 
-        if (!$cached || $cached !== $request->code) {
+        if (!$cached || $cached !== (int) $request->code) {
             return response()->json(['message' => 'Invalid or expired verification code'], 422);
         }
 
