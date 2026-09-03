@@ -82,7 +82,7 @@ class SettingController extends Controller
         $donateKeys = array_keys(config('donate', []));   // includes 'custom' (gateway)
 
         // Load existing blobs so partial saves don't wipe other sub-keys
-        $donate  = $this->getJsonSetting('donate',  config('donate',  []));
+        $donate = $this->getJsonSetting('donate', config('donate', []));
         $widgets = $this->getJsonSetting('widgets', config('widgets', []));
         $history = $this->getJsonSetting('history', config('global.logs', []));
 
@@ -94,6 +94,7 @@ class SettingController extends Controller
                 if (is_array($decoded)) {
                     $donate[$key] = $decoded;
                 }
+
                 continue;
             }
 
@@ -104,6 +105,7 @@ class SettingController extends Controller
                     $storeKey = $key === 'widgets_custom' ? 'custom' : $key;
                     $widgets[$storeKey] = $decoded;
                 }
+
                 continue;
             }
 
@@ -112,6 +114,7 @@ class SettingController extends Controller
                 if (is_array($decoded)) {
                     $history = $decoded;
                 }
+
                 continue;
             }
 
@@ -119,7 +122,7 @@ class SettingController extends Controller
             $toSave[$key] = is_array($value) ? json_encode($value) : $value;
         }
 
-        $toSave['donate']  = json_encode($donate);
+        $toSave['donate'] = json_encode($donate);
         $toSave['widgets'] = json_encode($widgets);
         $toSave['history'] = json_encode($history);
 
@@ -158,11 +161,12 @@ class SettingController extends Controller
             'appName' => config('app.name'),
 
             'referral' => $this->mergeJsonSetting($data, 'referral', config('global.referral', [])),
-            'tickets' => $this->mergeJsonSetting($data, 'tickets',  config('global.tickets', [])),
-            'sliders' => $this->mergeJsonSetting($data, 'sliders',  config('global.slider', [])),
-            'footer' => $this->mergeJsonSetting($data, 'footer',   config('global.footer', [])),
+            'tickets' => $this->mergeJsonSetting($data, 'tickets', config('global.tickets', [])),
+            'sliders' => $this->mergeJsonSetting($data, 'sliders', config('global.slider', [])),
+            'footer' => $this->mergeJsonSetting($data, 'footer', config('global.footer', [])),
             'mail' => $this->mergeJsonSetting($data, 'mail', []),
             'captcha' => $this->mergeJsonSetting($data, 'captcha', config('captcha', [])),
+            'whatsapp' => $this->mergeJsonSetting($data, 'whatsapp', config('services.whatsapp', [])),
             'vote' => $this->mergeJsonSetting($data, 'vote', config('vote', [])),
             'widgets' => $this->mergeJsonSetting($data, 'widgets', config('widgets', [])),
             'ranking' => $this->mergeJsonSetting($data, 'ranking', config('ranking', [])),
@@ -200,7 +204,7 @@ class SettingController extends Controller
      */
     private function mergeJsonSetting(array $data, string $key, array $defaults = []): array
     {
-        $raw     = $data[$key] ?? null;
+        $raw = $data[$key] ?? null;
         $decoded = is_string($raw) ? json_decode($raw, true) : $raw;
 
         return is_array($decoded) ? $decoded : $defaults;
@@ -211,7 +215,7 @@ class SettingController extends Controller
      */
     private function getJsonSetting(string $key, array $default = []): array
     {
-        $value   = Setting::get($key, json_encode($default));
+        $value = Setting::get($key, json_encode($default));
         $decoded = json_decode($value, true);
 
         return is_array($decoded) ? $decoded : $default;
@@ -226,7 +230,7 @@ class SettingController extends Controller
         }
 
         return collect(scandir($path))
-            ->reject(fn ($item) => in_array($item, ['.', '..']) || ! is_dir($path . '/' . $item))
+            ->reject(fn ($item) => in_array($item, ['.', '..']) || ! is_dir($path.'/'.$item))
             ->values()
             ->all();
     }

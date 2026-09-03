@@ -29,6 +29,9 @@
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-captcha" type="button" role="tab">{{ __('Captcha') }}</button>
             </li>
             <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-whatsapp" type="button" role="tab">{{ __('WhatsApp') }}</button>
+            </li>
+            <li class="nav-item" role="presentation">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-cache" type="button" role="tab">{{ __('Cache') }}</button>
             </li>
             <li class="nav-item" role="presentation">
@@ -187,6 +190,15 @@
                             <label class="form-check-label" for="agree_terms">{{ __('Enabled') }}</label>
                         </div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label d-block">{{ __('Show Phone Number on Register') }}</label>
+                        <div class="form-check">
+                            <input type="hidden" name="register_phone" value="0">
+                            <input class="form-check-input" type="checkbox" name="register_phone" value="1"
+                                   id="register_phone" {{ !empty($settings['register_phone']) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="register_phone">{{ __('Enabled') }}</label>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- ===================== MAIL ===================== --}}
@@ -282,6 +294,44 @@
                     </div>
 
                     <input type="hidden" id="captcha" name="captcha">
+                </div>
+
+                {{-- ===================== WHATSAPP ===================== --}}
+                <div class="tab-pane fade" id="tab-whatsapp" role="tabpanel">
+
+                    <h5 class="fw-semibold mb-3">{{ __('Meta WhatsApp Cloud API Configuration') }}</h5>
+                    <p class="text-muted small mb-3">
+                        {{ __('Used to send a welcome WhatsApp message to new users after registration. Get credentials from the') }}
+                        <a href="https://developers.facebook.com/docs/whatsapp/cloud-api" target="_blank">{{ __('WhatsApp Cloud API') }} &nearr;</a>.
+                    </p>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="whatsapp_enabled"
+                                {{ !empty($whatsapp['enabled']) ? 'checked' : '' }}>
+                            <label class="form-check-label fw-semibold" for="whatsapp_enabled">{{ __('Enable WhatsApp Notifications') }}</label>
+                        </div>
+                        <div class="form-text">{{ __('When disabled, no WhatsApp messages are sent after registration.') }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ __('Access Token') }}</label>
+                        <input type="text" class="form-control" id="whatsapp_token"
+                               value="{{ $whatsapp['token'] ?? '' }}" placeholder="EAAJ...">
+                        <div class="form-text">{{ __('The permanent system user access token. Keep this secret.') }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ __('Phone Number ID') }}</label>
+                        <input type="text" class="form-control" id="whatsapp_phone_number_id"
+                               value="{{ $whatsapp['phone_number_id'] ?? '' }}" placeholder="123456789012345">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ __('API Version') }}</label>
+                        <input type="text" class="form-control" id="whatsapp_api_version"
+                               value="{{ $whatsapp['api_version'] ?? 'v20.0' }}" placeholder="v20.0">
+                    </div>
+
+                    <input type="hidden" id="whatsapp" name="whatsapp">
                 </div>
 
                 {{-- ===================== CACHE ===================== --}}
@@ -839,6 +889,16 @@
             });
         }
 
+        // ─── WhatsApp ────────────────────────────────────────────────────────────────
+        function serializeWhatsapp() {
+            document.getElementById('whatsapp').value = JSON.stringify({
+                enabled:         document.getElementById('whatsapp_enabled').checked,
+                token:           document.getElementById('whatsapp_token').value,
+                phone_number_id: document.getElementById('whatsapp_phone_number_id').value,
+                api_version:     document.getElementById('whatsapp_api_version').value || 'v20.0',
+            });
+        }
+
         // ─── History ──────────────────────────────────────────────────────────────────
         function serializeHistory() {
             const history = {};
@@ -857,6 +917,7 @@
             serializeVote();
             serializeMail();
             serializeCaptcha();
+            serializeWhatsapp();
             serializeHistory();
         }
     </script>

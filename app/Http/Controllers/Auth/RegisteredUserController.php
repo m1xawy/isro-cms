@@ -12,6 +12,7 @@ use App\Models\SRO\Portal\MuJoiningInfo;
 use App\Models\SRO\Portal\MuUser;
 use App\Models\SRO\Portal\MuVIPInfo;
 use App\Models\User;
+use App\Services\WhatsAppService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -37,7 +38,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         if (config('global.disable_register')) {
-            return back()->withErrors(['username' => ["Register page is disabled!"]]);
+            return back()->withErrors(['username' => ['Register page is disabled!']]);
         }
 
         $request->validate($this->getValidationRules($request));
@@ -55,6 +56,7 @@ class RegisteredUserController extends Controller
                 'jid' => $jid,
                 'username' => $request->username,
                 'email' => $request->email,
+                'phone' => config('global.register_phone', false) ? $request->phone : null,
                 'password' => $request->password,
             ]);
 
@@ -63,6 +65,7 @@ class RegisteredUserController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->withErrors(['error' => 'Registration failed. Please try again.']);
         }
 
@@ -72,14 +75,18 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        $this->sendWelcomeWhatsApp($user, $request);
+
         return redirect(route('account', absolute: false));
     }
 
     private function getValidationRules(Request $request): array
     {
         $rules = [
-            'username' => ['required', 'regex:/^[A-Za-z0-9]*$/', 'min:6', 'max:16', 'unique:' . User::class],
-            'email' => ['required', 'string', 'email', 'max:70', 'unique:' . User::class],
+            'username' => ['required', 'regex:/^[A-Za-z0-9]*$/', 'min:6', 'max:16', 'unique:'.User::class],
+            'email' => ['required', 'string', 'email', 'max:70', 'unique:'.User::class],
+            'phone' => config('global.register_phone', false) ? ['required', 'string', 'max:32', 'regex:/^\+?[0-9]{7,15}$/'] : ['nullable'],
+
             'password' => ['required', 'min:6', 'max:32', 'confirmed'],
             'g-recaptcha-response' => config('captcha.enabled', false) ? ['required', 'captcha'] : ['nullable'],
             'terms' => config('global.agree_terms', false) ? ['required', 'accepted'] : ['nullable'],
@@ -88,11 +95,11 @@ class RegisteredUserController extends Controller
         ];
 
         if (config('global.server.version') === 'vSRO') {
-            $rules['username'][] = 'unique:' . TbUser::class . ',StrUserID';
+            $rules['username'][] = 'unique:'.TbUser::class.',StrUserID';
         } else {
-            $rules['username'][] = 'unique:' . MuUser::class . ',UserID';
-            $rules['username'][] = 'unique:' . TbUser::class . ',StrUserID';
-            $rules['email'][] = 'unique:' . MuEmail::class . ',EmailAddr';
+            $rules['username'][] = 'unique:'.MuUser::class.',UserID';
+            $rules['username'][] = 'unique:'.TbUser::class.',StrUserID';
+            $rules['email'][] = 'unique:'.MuEmail::class.',EmailAddr';
         }
 
         return $rules;
@@ -123,9 +130,9 @@ class RegisteredUserController extends Controller
             MuJoiningInfo::setJoiningInfo($portalUser->JID, ip2long($ip));
             MuVIPInfo::setVIPInfo($portalUser->JID);
 
-            //type 1 = silk, type 3 = premium silk
-            //AphChangedSilk::setChangedSilk($portalUser->JID, 1, 0);
-            //AphChangedSilk::setChangedSilk($portalUser->JID, 3, 0);
+            // type 1 = silk, type 3 = premium silk
+            // AphChangedSilk::setChangedSilk($portalUser->JID, 1, 0);
+            // AphChangedSilk::setChangedSilk($portalUser->JID, 3, 0);
 
             TbUser::setISROAccount($portalUser->JID, $request->username, $request->password, $request->email, $ip);
 
@@ -133,9 +140,25 @@ class RegisteredUserController extends Controller
         });
     }
 
+    private function sendWelcomeWhatsApp(User $user, Request $request): void
+    {
+        if (! $request->filled('phone')) {
+            return;
+        }
+
+        $whatsapp = app(WhatsAppService::class);
+
+        $message = __(
+            'Welcome to :site, :username! Your account has been created successfully.',
+            ['site' => config('global.site_name'), 'username' => $user->username]
+        );
+
+        $whatsapp->sendText($request->phone, $message);
+    }
+
     private function handleReferral(User $user, Request $request): void
     {
-        if (!config('global.referral.enabled', true)) {
+        if (! config('global.referral.enabled', true)) {
             return;
         }
 

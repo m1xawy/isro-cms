@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use App\Models\SRO\Account\TbUser;
-use App\Models\SRO\Account\BlockedUser;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\SRO\Portal\MuUser;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -48,6 +47,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'jid',
         'username',
         'email',
+        'phone',
         'password',
     ];
 
@@ -122,7 +122,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if (config('global.server.version') === 'vSRO') {
             return $this->hasOne(TbUser::class, 'JID', 'jid');
-        } else{
+        } else {
             return $this->hasOne(TbUser::class, 'PortalJID', 'jid');
         }
     }
@@ -176,7 +176,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getInvitesCreated()
     {
-        return cache()->remember( "user_invites_created_{$this->jid}", 600, fn () => $this->invitesCreated()->get());
+        return cache()->remember("user_invites_created_{$this->jid}", 600, fn () => $this->invitesCreated()->get());
     }
 
     public function clearInvitesCache(): void

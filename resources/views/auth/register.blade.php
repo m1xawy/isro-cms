@@ -35,6 +35,19 @@
                                 @enderror
                             </div>
 
+                            @if(config('global.register_phone', false))
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">{{ __('Phone Number') }}</label>
+                                <input id="phone" type="tel" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required>
+
+                                @error('phone')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                            @endif
+
                             <div class="mb-3">
                                 <label for="password" class="form-label">{{ __('Password') }}</label>
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
@@ -100,7 +113,47 @@
         </div>
     </section>
 @endsection
+@push('styles')
+    @if(config('global.register_phone', false))
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@24/build/css/intlTelInput.css">
+        <style>
+            #phone.iti__input,
+            .iti {
+                width: 100%;
+            }
+            .iti__country-list {
+                z-index: 1100;
+            }
+        </style>
+    @endif
+@endpush
 @push('scripts')
+    @if(config('global.register_phone', false))
+        <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@24/build/js/intlTelInput.min.js"></script>
+        <script>
+            const itiInput = document.querySelector('#phone');
+            const iti = window.intlTelInput(itiInput, {
+                initialCountry: 'auto',
+                geoIpLookup: (callback) => {
+                    fetch('https://ipapi.co/json/')
+                        .then((res) => res.json())
+                        .then((data) => callback(data.country_code))
+                        .catch(() => callback('us'));
+                },
+                utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@24/build/js/utils.js',
+            });
+            itiInput.addEventListener('blur', () => {
+                if (iti.isValidNumber()) {
+                    itiInput.value = iti.getNumber();
+                }
+            });
+            document.querySelector('form[action*="register"]').addEventListener('submit', () => {
+                if (iti.isValidNumber()) {
+                    itiInput.value = iti.getNumber();
+                }
+            });
+        </script>
+    @endif
     <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
     <script>
         FingerprintJS.load().then(fp => {

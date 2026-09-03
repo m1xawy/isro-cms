@@ -20,12 +20,13 @@ return [
     'register_confirm' => 0,
     'duplicate_email' => 0,
     'agree_terms' => 0,
+    'register_phone' => 0,
 
     'server' => [
         'version' => env('SRO_VERSION', 'iSRO'), // or 'vSRO'
-        //'saltKey' => 'eset5ag.nsy-g6ky5.mp',
-        //'WebMallPass' => 'ISRO-R Development',
-        //'WebMallAddr' => "http://webmall.luxor-online.com/gateway.asp"
+        // 'saltKey' => 'eset5ag.nsy-g6ky5.mp',
+        // 'WebMallPass' => 'ISRO-R Development',
+        // 'WebMallAddr' => "http://webmall.luxor-online.com/gateway.asp"
     ],
     'cache' => [
         'account_info' => 60, // 1 minutes
@@ -88,7 +89,7 @@ return [
             'sales' => 'Sales',
             'bugs' => 'Bugs',
             'other' => 'Other',
-        ]
+        ],
     ],
     'logs' => [
         'schedule' => true,
