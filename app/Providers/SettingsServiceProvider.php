@@ -30,6 +30,7 @@ class SettingsServiceProvider extends ServiceProvider
             $this->applyHistorySettings($settings);
             $this->applyJsonConfig($settings, 'donate', 'donate');
             $this->applyJsonConfig($settings, 'widgets', 'widgets');
+            $this->applyEventScheduleOverrides($settings);
             $this->applyJsonConfig($settings, 'ranking', 'ranking');
             $this->applyRankingSettings();
             $this->applyJsonConfig($settings, 'referral', 'global.referral');
@@ -215,6 +216,39 @@ class SettingsServiceProvider extends ServiceProvider
             ->contains(fn ($item) => is_array($item) && ! empty($item['enabled']));
 
         Config::set('ranking.enabled', $hasEnabledRanking);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Event Schedule (widgets)
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Once the event schedule has been saved from the admin panel, the DB value
+     * is the single source of truth. The generic config merge above would
+     * re-add built-in events that the admin removed, so for this sub-key we
+     * disable that merge as soon as the schedule has been populated. While it
+     * has never been saved (names and custom both empty) the built-in events
+     * from the config file are kept.
+     */
+    private function applyEventScheduleOverrides(array $settings): void
+    {
+        $widgets = $this->decodeJson($settings['widgets'] ?? null);
+        $saved = $widgets['event_schedule'] ?? null;
+
+        if (! is_array($saved)) {
+            return;
+        }
+
+        $names  = $saved['names'] ?? [];
+        $custom = $saved['custom'] ?? [];
+
+        if (empty($names) && empty($custom)) {
+            return;
+        }
+
+        Config::set('widgets.event_schedule', $saved);
     }
 
     /*

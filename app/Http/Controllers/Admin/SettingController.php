@@ -25,6 +25,11 @@ class SettingController extends Controller
         $context = $this->viewContext();
         $widgets = $context['widgets'];
 
+        // The event schedule is a full snapshot once saved from the panel, so it
+        // must not inherit config-file events the admin removed. Config defaults
+        // are only used until the schedule has actually been saved (see helper).
+        $widgets['event_schedule'] = $this->effectiveEventSchedule($widgets);
+
         $context['limitWidgets'] = [
             ['id' => 'global_history', 'label' => 'Global History'],
             ['id' => 'unique_history', 'label' => 'Unique History'],
@@ -208,6 +213,30 @@ class SettingController extends Controller
         $decoded = is_string($raw) ? json_decode($raw, true) : $raw;
 
         return is_array($decoded) ? $decoded : $defaults;
+    }
+
+    /**
+     * The DB-saved event schedule is authoritative once it has been populated,
+     * so events the admin removes are not re-injected from the config file.
+     * Only while it has never been saved (both names and custom are empty) do
+     * we fall back to the built-in config-file events.
+     */
+    private function effectiveEventSchedule(array $widgets): array
+    {
+        $saved = $widgets['event_schedule'] ?? null;
+
+        if (! is_array($saved)) {
+            return config('widgets.event_schedule', ['enabled' => false, 'names' => [], 'custom' => []]);
+        }
+
+        $names  = $saved['names'] ?? [];
+        $custom = $saved['custom'] ?? [];
+
+        if (empty($names) && empty($custom)) {
+            return array_replace_recursive(config('widgets.event_schedule', []), $saved);
+        }
+
+        return $saved;
     }
 
     /**
