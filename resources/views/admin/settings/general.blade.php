@@ -299,10 +299,10 @@
                 {{-- ===================== WHATSAPP ===================== --}}
                 <div class="tab-pane fade" id="tab-whatsapp" role="tabpanel">
 
-                    <h5 class="fw-semibold mb-3">{{ __('Meta WhatsApp Cloud API Configuration') }}</h5>
+                    <h5 class="fw-semibold mb-3">{{ __('360dialog WhatsApp API Configuration') }}</h5>
                     <p class="text-muted small mb-3">
-                        {{ __('Used to send a welcome WhatsApp message to new users after registration. Get credentials from the') }}
-                        <a href="https://developers.facebook.com/docs/whatsapp/cloud-api" target="_blank">{{ __('WhatsApp Cloud API') }} &nearr;</a>.
+                        {{ __('Used to send WhatsApp messages for registration, verification codes and account updates. Get your API key from the') }}
+                        <a href="https://docs.360dialog.com" target="_blank">{{ __('360dialog Dashboard') }} &nearr;</a>.
                     </p>
 
                     <div class="mb-3">
@@ -315,20 +315,18 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">{{ __('Access Token') }}</label>
+                        <label class="form-label">{{ __('API Key (D360-API-KEY)') }}</label>
                         <input type="text" class="form-control" id="whatsapp_token"
-                               value="{{ $whatsapp['token'] ?? '' }}" placeholder="EAAJ...">
-                        <div class="form-text">{{ __('The permanent system user access token. Keep this secret.') }}</div>
+                               value="{{ $whatsapp['token'] ?? '' }}" placeholder="360dialog API key">
+                        <div class="form-text">{{ __('Your 360dialog API key. Keep this secret.') }}</div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">{{ __('Phone Number ID') }}</label>
-                        <input type="text" class="form-control" id="whatsapp_phone_number_id"
-                               value="{{ $whatsapp['phone_number_id'] ?? '' }}" placeholder="123456789012345">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">{{ __('API Version') }}</label>
-                        <input type="text" class="form-control" id="whatsapp_api_version"
-                               value="{{ $whatsapp['api_version'] ?? 'v20.0' }}" placeholder="v20.0">
+                        <label class="form-label">{{ __('Environment') }}</label>
+                        <select class="form-select" id="whatsapp_base_url">
+                            <option value="https://waba-sandbox.360dialog.io/v1" {{ (($whatsapp['base_url'] ?? '') === 'https://waba-sandbox.360dialog.io/v1') ? 'selected' : '' }}>{{ __('Sandbox') }}</option>
+                            <option value="https://waba-v2.360dialog.io" {{ (($whatsapp['base_url'] ?? '') === 'https://waba-v2.360dialog.io') ? 'selected' : '' }}>{{ __('Production') }}</option>
+                        </select>
+                        <div class="form-text">{{ __('Switch between the 360dialog sandbox and production API.') }}</div>
                     </div>
 
                     <input type="hidden" id="whatsapp" name="whatsapp">
@@ -892,10 +890,9 @@
         // ─── WhatsApp ────────────────────────────────────────────────────────────────
         function serializeWhatsapp() {
             document.getElementById('whatsapp').value = JSON.stringify({
-                enabled:         document.getElementById('whatsapp_enabled').checked,
-                token:           document.getElementById('whatsapp_token').value,
-                phone_number_id: document.getElementById('whatsapp_phone_number_id').value,
-                api_version:     document.getElementById('whatsapp_api_version').value || 'v20.0',
+                enabled: document.getElementById('whatsapp_enabled').checked,
+                token: document.getElementById('whatsapp_token').value,
+                base_url: document.getElementById('whatsapp_base_url').value || 'https://waba-v2.360dialog.io',
             });
         }
 

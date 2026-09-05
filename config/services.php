@@ -38,8 +38,7 @@ return [
     'whatsapp' => [
         'enabled' => (bool) env('WHATSAPP_ENABLED', false),
         'token' => env('WHATSAPP_TOKEN'),
-        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
-        'api_version' => env('WHATSAPP_API_VERSION', 'v20.0'),
+        'base_url' => env('WHATSAPP_BASE_URL', 'https://waba-v2.360dialog.io'),
     ],
 
 ];

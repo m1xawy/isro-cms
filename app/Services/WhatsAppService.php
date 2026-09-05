@@ -9,22 +9,18 @@ class WhatsAppService
 {
     private string $token;
 
-    private string $phoneNumberId;
-
-    private string $apiVersion;
+    private string $baseUrl;
 
     public function __construct()
     {
         $this->token = (string) config('services.whatsapp.token', '');
-        $this->phoneNumberId = (string) config('services.whatsapp.phone_number_id', '');
-        $this->apiVersion = (string) config('services.whatsapp.api_version', 'v20.0');
+        $this->baseUrl = rtrim((string) config('services.whatsapp.base_url', 'https://waba-v2.360dialog.io'), '/');
     }
 
     public function enabled(): bool
     {
         return (bool) config('services.whatsapp.enabled', false)
-            && $this->token !== ''
-            && $this->phoneNumberId !== '';
+            && $this->token !== '';
     }
 
     /**
@@ -39,22 +35,52 @@ class WhatsAppService
             return false;
         }
 
-        $url = "https://graph.facebook.com/{$this->apiVersion}/{$this->phoneNumberId}/messages";
+        return $this->send([
+            'messaging_product' => 'whatsapp',
+            'recipient_type' => 'individual',
+            'to' => ltrim($to, '+'),
+            'type' => 'text',
+            'text' => ['preview_url' => false, 'body' => $message],
+        ]);
+    }
+
+    /**
+     * Send an approved template message to a number. This is the only message
+     * type allowed outside of the 24-hour customer service window.
+     */
+    public function sendTemplate(string $to, string $templateName, array $parameters = [], string $language = 'en_US'): bool
+    {
+        if (! $this->enabled()) {
+            Log::warning('WhatsApp is not configured. Skipping message.', ['to' => $to]);
+
+            return false;
+        }
+
+        $bodyParams = array_map(fn ($param) => ['type' => 'text', 'text' => (string) $param], $parameters);
 
         $payload = [
             'messaging_product' => 'whatsapp',
             'to' => ltrim($to, '+'),
-            'type' => 'text',
-            'text' => ['preview_url' => false, 'body' => $message],
+            'type' => 'template',
+            'template' => [
+                'name' => $templateName,
+                'language' => ['code' => $language],
+                'components' => $bodyParams ? [['type' => 'body', 'parameters' => $bodyParams]] : [],
+            ],
         ];
 
-        $response = Http::withToken($this->token)
+        return $this->send($payload);
+    }
+
+    private function send(array $payload): bool
+    {
+        $response = Http::withHeaders(['D360-API-KEY' => $this->token])
             ->acceptJson()
-            ->post($url, $payload);
+            ->post($this->baseUrl.'/messages', $payload);
 
         if ($response->successful()) {
             Log::info('WhatsApp message sent.', [
-                'to' => $to,
+                'to' => $payload['to'],
                 'message_id' => data_get($response->json(), 'messages.0.id'),
             ]);
 
@@ -62,7 +88,7 @@ class WhatsAppService
         }
 
         Log::error('WhatsApp message failed.', [
-            'to' => $to,
+            'to' => $payload['to'],
             'status' => $response->status(),
             'body' => $response->body(),
         ]);

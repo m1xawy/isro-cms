@@ -14,7 +14,7 @@
                     <div class="col-lg-12">
                         <div class="alert alert-danger text-center" role="alert">
                             {{ __('No Characters Found!') }}
-                        </div>s
+                        </div>
                     </div>
                 @else
                     @foreach(auth()->user()->tbUser->shardUser as $row)
@@ -60,6 +60,10 @@
                                 <td>{{ auth()->user()->tbUser->Email }}</td>
                             </tr>
                             <tr>
+                                <th scope="row">{{ __('Phone') }}</th>
+                                <td>{{ auth()->user()->phone ?: __('Not set') }}</td>
+                            </tr>
+                            <tr>
                                 <th scope="row">{{ __('Silk') }}</th>
                                 <td>{{ auth()->user()->tbUser->getSilk->silk_own }}</td>
                             </tr>
@@ -79,6 +83,10 @@
                             <tr>
                                 <th scope="row">{{ __('Email') }}</th>
                                 <td>{{ auth()->user()->muUser->muEmail->EmailAddr }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ __('Phone') }}</th>
+                                <td>{{ auth()->user()->phone ?: __('Not set') }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">{{ __('Premium Silk') }}</th>

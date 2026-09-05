@@ -1,6 +1,54 @@
 <div class="card">
     <div class="card-header">{{ __('Profile Information') }}</div>
 
+    @push('styles')
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@24/build/css/intlTelInput.css">
+        <style>
+            #phone.iti__input,
+            .iti {
+                width: 100%;
+            }
+            .iti__country-list {
+                z-index: 1100;
+            }
+        </style>
+    @endpush
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@24/build/js/intlTelInput.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const input = document.querySelector('#phone');
+                if (!input) {
+                    return;
+                }
+
+                window.itiPhone = window.intlTelInput(input, {
+                    initialCountry: 'auto',
+                    geoIpLookup: (callback) => {
+                        fetch('https://ipapi.co/json/')
+                            .then((res) => res.json())
+                            .then((data) => callback(data.country_code))
+                            .catch(() => callback('us'));
+                    },
+                    utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@24/build/js/utils.js',
+                });
+
+                const normalize = () => {
+                    if (window.itiPhone.isValidNumber()) {
+                        input.value = window.itiPhone.getNumber();
+                    }
+                };
+
+                input.addEventListener('blur', normalize);
+
+                const form = input.closest('form');
+                if (form) {
+                    form.addEventListener('submit', normalize);
+                }
+            });
+        </script>
+    @endpush
+
     <div class="card-body">
         <form id="send-verification" class="d-none" method="post" action="{{ route('verification.send') }}">
             @csrf
@@ -62,6 +110,34 @@
                                     {{ __('A new verification link has been sent to your email address.') }}
                                 </div>
                             @endif
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+<div class="row mb-3">
+                <label for="phone" class="col-lg-4 col-form-label text-md-end">
+                    {{ __('Phone') }}
+                </label>
+
+                <div class="col-lg-6">
+                    <input id="phone" type="tel" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone', $user->phone) }}" autocomplete="phone">
+
+                    @error('phone')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+
+                    @if ($user->phone && ! $user->hasVerifiedPhone())
+                        <div class="mt-2">
+                            <p class="mb-0">
+                                {{ __('Your phone number is unverified.') }}
+
+                                <a href="{{ route('phone.verify') }}" class="btn btn-link p-0">
+                                    {{ __('Click here to verify it.') }}
+                                </a>
+                            </p>
                         </div>
                     @endif
                 </div>

@@ -146,8 +146,7 @@ class SettingsServiceProvider extends ServiceProvider
 
         Config::set('services.whatsapp.enabled', $whatsapp['enabled'] ?? config('services.whatsapp.enabled'));
         Config::set('services.whatsapp.token', $whatsapp['token'] ?? config('services.whatsapp.token'));
-        Config::set('services.whatsapp.phone_number_id', $whatsapp['phone_number_id'] ?? config('services.whatsapp.phone_number_id'));
-        Config::set('services.whatsapp.api_version', $whatsapp['api_version'] ?? config('services.whatsapp.api_version'));
+        Config::set('services.whatsapp.base_url', $whatsapp['base_url'] ?? config('services.whatsapp.base_url'));
     }
 
     /*
@@ -241,7 +240,7 @@ class SettingsServiceProvider extends ServiceProvider
             return;
         }
 
-        $names  = $saved['names'] ?? [];
+        $names = $saved['names'] ?? [];
         $custom = $saved['custom'] ?? [];
 
         if (empty($names) && empty($custom)) {

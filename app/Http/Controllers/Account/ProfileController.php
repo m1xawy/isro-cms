@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Setting;
 use App\Models\SRO\Account\SecondaryPassword;
-use App\Models\SRO\Account\TbUser;
 use App\Notifications\SendVerifyCode;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -56,6 +55,10 @@ class ProfileController extends Controller
             $user->email_verified_at = null;
         }
 
+        if ($user->isDirty('phone')) {
+            $user->phone_verified_at = null;
+        }
+
         $user->save();
 
         $user->updateGameEmail($request->email);
@@ -67,7 +70,7 @@ class ProfileController extends Controller
     {
         $request->validate([
             'verify_code_email' => 'required|string',
-            'new_email' => 'nullable|email|unique:users,email,' . $request->user()->id,
+            'new_email' => 'nullable|email|unique:users,email,'.$request->user()->id,
             'verify_login' => 'nullable|in:0,1',
         ]);
 
@@ -75,8 +78,8 @@ class ProfileController extends Controller
         $originalEmail = $user->email;
         $token = Cache::get('verify_code_'.$user->email);
 
-        if (!$token || (int) $request->verify_code_email !== $token) {
-            return back()->withErrors(['verify_code_email' => 'The provided verification code is invalid or expired.',]);
+        if (! $token || (int) $request->verify_code_email !== $token) {
+            return back()->withErrors(['verify_code_email' => 'The provided verification code is invalid or expired.']);
         }
 
         if ($request->filled('new_email')) {
@@ -85,6 +88,12 @@ class ProfileController extends Controller
             $user->save();
 
             $user->updateGameEmail($request->new_email);
+        }
+
+        if ($request->has('phone') && $request->phone !== $user->phone) {
+            $user->phone = $request->phone;
+            $user->phone_verified_at = null;
+            $user->save();
         }
 
         if ($request->has('verify_login')) {
@@ -110,7 +119,7 @@ class ProfileController extends Controller
 
         Auth::logout();
 
-        //$user->delete();
+        // $user->delete();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -134,7 +143,7 @@ class ProfileController extends Controller
         ]);
 
         $tbUser = $request->user()->tbUser;
-        if (!$tbUser || md5($request->password) !== $tbUser->password) {
+        if (! $tbUser || md5($request->password) !== $tbUser->password) {
             return back()->with('passcode_error', 'Invalid password provided. Please try again.');
         }
 
@@ -154,7 +163,7 @@ class ProfileController extends Controller
         $user = $request->user();
         $token = Cache::get('verify_code_'.$user->email);
 
-        if (!$token || (int) $request->verify_code_secondary !== $token) {
+        if (! $token || (int) $request->verify_code_secondary !== $token) {
             return back()->withErrors(['verify_code_secondary' => 'The provided verification code is invalid or expired.']);
         }
 
@@ -167,7 +176,7 @@ class ProfileController extends Controller
         return back()->with('passcode_error', 'No secondary password was found for your account.');
     }
 
-    public function sendVerifyCode(Request $request) : RedirectResponse
+    public function sendVerifyCode(Request $request): RedirectResponse
     {
         $request->validate([
             'context' => 'required|string',
@@ -194,7 +203,7 @@ class ProfileController extends Controller
         ];
 
         foreach ($request->except(['_token']) as $key => $value) {
-            if (!in_array($key, $allowedKeys)) {
+            if (! in_array($key, $allowedKeys)) {
                 continue;
             }
 
