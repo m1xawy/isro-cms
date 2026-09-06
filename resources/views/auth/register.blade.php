@@ -35,7 +35,7 @@
                                 @enderror
                             </div>
 
-                            @if(config('global.register_phone', false))
+                            @if(config('services.whatsapp.enabled', false))
                             <div class="mb-3">
                                 <label for="phone" class="form-label">{{ __('Phone Number') }}</label>
                                 <input id="phone" type="tel" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required>
@@ -114,7 +114,7 @@
     </section>
 @endsection
 @push('styles')
-    @if(config('global.register_phone', false))
+    @if(config('services.whatsapp.enabled', false))
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@24/build/css/intlTelInput.css">
         <style>
             #phone.iti__input,
@@ -128,7 +128,7 @@
     @endif
 @endpush
 @push('scripts')
-    @if(config('global.register_phone', false))
+    @if(config('services.whatsapp.enabled', false))
         <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@24/build/js/intlTelInput.min.js"></script>
         <script>
             const itiInput = document.querySelector('#phone');

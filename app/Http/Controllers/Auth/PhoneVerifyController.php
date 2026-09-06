@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Notifications\SendVerifyCode;
-use App\Services\WhatsAppService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -24,14 +23,16 @@ class PhoneVerifyController extends Controller
             return view('auth.verify-phone');
         }
 
-        $this->issueCode($user);
+        if (! Cache::has('phone_verify_code_'.$user->id)) {
+            $this->issueCode($user);
+        }
 
         return view('auth.verify-phone');
     }
 
     /**
-     * Generate and deliver a phone verification code (WhatsApp when available,
-     * otherwise email).
+     * Generate and deliver a phone verification code by WhatsApp when
+     * available, otherwise by email.
      */
     public function issueCode(User $user): void
     {
@@ -39,14 +40,7 @@ class PhoneVerifyController extends Controller
 
         Cache::put('phone_verify_code_'.$user->id, $code, now()->addMinutes(30));
 
-        $whatsapp = app(WhatsAppService::class);
-
-        $sent = $user->phone
-            && $whatsapp->sendText($user->phone, "Your phone verification code is: {$code}");
-
-        if (! $sent) {
-            $user->notify(new SendVerifyCode((string) $code));
-        }
+        $user->notify(new SendVerifyCode($code));
     }
 
     /**
@@ -76,7 +70,8 @@ class PhoneVerifyController extends Controller
 
         Cache::forget('phone_verify_code_'.$user->id);
 
-        $user->update(['phone_verified_at' => now()]);
+        $user->phone_verified_at = now();
+        $user->save();
 
         return redirect()->route('account.edit')->with('status', 'phone-verified');
     }
@@ -90,10 +85,6 @@ class PhoneVerifyController extends Controller
 
         if (! $user->phone) {
             return back()->withErrors(['phone' => 'Set a phone number first.']);
-        }
-
-        if (Cache::has('phone_verify_code_'.$user->id)) {
-            return back()->withErrors(['code' => 'Please wait before requesting a new code.']);
         }
 
         $this->issueCode($user);

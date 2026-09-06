@@ -71,8 +71,8 @@ class AuthController extends Controller
     private function validationRules(Request $request): array
     {
         $rules = [
-            'username' => ['required', 'regex:/^[A-Za-z0-9]*$/', 'min:6', 'max:16', 'unique:' . User::class],
-            'email' => ['required', 'email', 'max:70', 'unique:' . User::class],
+            'username' => ['required', 'regex:/^[A-Za-z0-9]*$/', 'min:6', 'max:16', 'unique:'.User::class],
+            'email' => ['required', 'email', 'max:70', 'unique:'.User::class],
             'password' => ['required', 'min:6', 'max:32', 'confirmed'],
             'g-recaptcha-response' => config('captcha.enabled', false) ? ['required', 'captcha'] : ['nullable'],
             'terms' => config('global.agree_terms', false) ? ['required', 'accepted'] : ['nullable'],
@@ -81,11 +81,11 @@ class AuthController extends Controller
         ];
 
         if (config('global.server.version') === 'vSRO') {
-            $rules['username'][] = 'unique:' . TbUser::class . ',StrUserID';
+            $rules['username'][] = 'unique:'.TbUser::class.',StrUserID';
         } else {
-            $rules['username'][] = 'unique:' . MuUser::class . ',UserID';
-            $rules['username'][] = 'unique:' . TbUser::class . ',StrUserID';
-            $rules['email'][] = 'unique:' . MuEmail::class . ',EmailAddr';
+            $rules['username'][] = 'unique:'.MuUser::class.',UserID';
+            $rules['username'][] = 'unique:'.TbUser::class.',StrUserID';
+            $rules['email'][] = 'unique:'.MuEmail::class.',EmailAddr';
         }
 
         return $rules;
@@ -96,6 +96,7 @@ class AuthController extends Controller
         return DB::transaction(function () use ($request, $ip) {
             $tbUser = TbUser::setVSROAccount(null, $request->username, $request->password, $request->email, $ip);
             TbUser::updateSilk($tbUser->JID, 3, 0);
+
             return $tbUser->JID;
         });
     }
@@ -113,9 +114,9 @@ class AuthController extends Controller
             MuJoiningInfo::setJoiningInfo($portalUser->JID, $userBinIP);
             MuVIPInfo::setVIPInfo($portalUser->JID);
 
-            //type 1 = silk, type 3 = premium silk
-            //AphChangedSilk::setChangedSilk($portalUser->JID, 1, 0);
-            //AphChangedSilk::setChangedSilk($portalUser->JID, 3, 0);
+            // type 1 = silk, type 3 = premium silk
+            // AphChangedSilk::setChangedSilk($portalUser->JID, 1, 0);
+            // AphChangedSilk::setChangedSilk($portalUser->JID, 3, 0);
 
             TbUser::setISROAccount($portalUser->JID, $request->username, $request->password, $request->email, $ip);
 
@@ -125,7 +126,9 @@ class AuthController extends Controller
 
     private function handleReferral(User $user, Request $request): void
     {
-        if (!config('global.referral.enabled', true)) return;
+        if (! config('global.referral.enabled', true)) {
+            return;
+        }
 
         if ($request->filled('invite') && $request->filled('fingerprint')) {
             Referral::inviteReferral($user, $request->invite, $request->fingerprint, $request->ip());
@@ -142,10 +145,10 @@ class AuthController extends Controller
 
         $user = User::where('username', $request->username)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             $tbUser = TbUser::where('StrUserID', $request->username)->where('password', md5($request->password))->first();
 
-            if (!$tbUser) {
+            if (! $tbUser) {
                 return response()->json([
                     'message' => 'Invalid credentials',
                 ], 401);
@@ -168,6 +171,7 @@ class AuthController extends Controller
 
         if ($result) {
             $result['token'] = $user->createToken('api-token')->plainTextToken;
+
             return response()->json($result);
         }
 
@@ -209,7 +213,7 @@ class AuthController extends Controller
 
         $cached = Cache::get('verify_code_'.$user->email);
 
-        if (!$cached || $cached !== (int) $request->code) {
+        if (! $cached || $cached !== (int) $request->code) {
             return response()->json(['message' => 'Invalid or expired verification code'], 422);
         }
 
@@ -256,7 +260,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Logged out successfully.'
+            'message' => 'Logged out successfully.',
         ]);
     }
 

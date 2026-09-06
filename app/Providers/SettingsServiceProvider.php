@@ -145,8 +145,13 @@ class SettingsServiceProvider extends ServiceProvider
         }
 
         Config::set('services.whatsapp.enabled', $whatsapp['enabled'] ?? config('services.whatsapp.enabled'));
-        Config::set('services.whatsapp.token', $whatsapp['token'] ?? config('services.whatsapp.token'));
-        Config::set('services.whatsapp.base_url', $whatsapp['base_url'] ?? config('services.whatsapp.base_url'));
+        Config::set('services.whatsapp.account_sid', $whatsapp['account_sid'] ?? config('services.whatsapp.account_sid'));
+        Config::set('services.whatsapp.auth_token', $whatsapp['auth_token'] ?? config('services.whatsapp.auth_token'));
+        Config::set('services.whatsapp.from', $whatsapp['from'] ?? config('services.whatsapp.from'));
+        Config::set('services.whatsapp.welcome_enabled', $whatsapp['welcome_enabled'] ?? config('services.whatsapp.welcome_enabled'));
+        Config::set('services.whatsapp.welcome_message', $whatsapp['welcome_message'] ?? config('services.whatsapp.welcome_message'));
+        Config::set('services.whatsapp.confirm_enabled', $whatsapp['confirm_enabled'] ?? config('services.whatsapp.confirm_enabled'));
+        Config::set('services.whatsapp.confirm_message', $whatsapp['confirm_message'] ?? config('services.whatsapp.confirm_message'));
     }
 
     /*

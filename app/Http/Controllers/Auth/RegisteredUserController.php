@@ -56,7 +56,7 @@ class RegisteredUserController extends Controller
                 'jid' => $jid,
                 'username' => $request->username,
                 'email' => $request->email,
-                'phone' => config('global.register_phone', false) ? $request->phone : null,
+                'phone' => config('services.whatsapp.enabled', false) ? $request->phone : null,
                 'password' => $request->password,
             ]);
 
@@ -69,13 +69,9 @@ class RegisteredUserController extends Controller
             return back()->withErrors(['error' => 'Registration failed. Please try again.']);
         }
 
-        if (config('global.register_confirm')) {
-            event(new Registered($user));
-        }
-
         Auth::login($user);
 
-        $this->sendWelcomeWhatsApp($user, $request);
+        $this->handleRegistrationMessages($user, $request);
 
         return redirect(route('account', absolute: false));
     }
@@ -85,7 +81,7 @@ class RegisteredUserController extends Controller
         $rules = [
             'username' => ['required', 'regex:/^[A-Za-z0-9]*$/', 'min:6', 'max:16', 'unique:'.User::class],
             'email' => ['required', 'string', 'email', 'max:70', 'unique:'.User::class],
-            'phone' => config('global.register_phone', false) ? ['required', 'string', 'max:32', 'regex:/^\+?[0-9]{7,15}$/'] : ['nullable'],
+            'phone' => config('services.whatsapp.enabled', false) ? ['required', 'string', 'max:32', 'regex:/^\+?[0-9]{7,15}$/'] : ['nullable'],
 
             'password' => ['required', 'min:6', 'max:32', 'confirmed'],
             'g-recaptcha-response' => config('captcha.enabled', false) ? ['required', 'captcha'] : ['nullable'],
@@ -140,20 +136,32 @@ class RegisteredUserController extends Controller
         });
     }
 
-    private function sendWelcomeWhatsApp(User $user, Request $request): void
+    private function handleRegistrationMessages(User $user, Request $request): void
     {
-        if (! $request->filled('phone')) {
+        $whatsapp = app(WhatsAppService::class);
+        $hasPhone = $request->filled('phone');
+
+        if (config('services.whatsapp.welcome_enabled', true) && $hasPhone && $whatsapp->enabled()) {
+            $whatsapp->sendText(
+                $request->phone,
+                __((string) config(
+                    'services.whatsapp.welcome_message',
+                    'Welcome to :site, :username! Your account has been created successfully.'
+                ), ['site' => config('global.site_name'), 'username' => $user->username])
+            );
+        }
+
+        if (! config('global.register_confirm')) {
             return;
         }
 
-        $whatsapp = app(WhatsAppService::class);
+        if ($hasPhone && $whatsapp->enabled() && config('services.whatsapp.confirm_enabled', false)) {
+            $whatsapp->sendVerificationLink($user);
 
-        $message = __(
-            'Welcome to :site, :username! Your account has been created successfully.',
-            ['site' => config('global.site_name'), 'username' => $user->username]
-        );
+            return;
+        }
 
-        $whatsapp->sendText($request->phone, $message);
+        event(new Registered($user));
     }
 
     private function handleReferral(User $user, Request $request): void

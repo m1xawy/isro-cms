@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
-use App\Notifications\SendVerifyCode;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
+use App\Notifications\SendVerifyCode;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +31,9 @@ class AuthenticatedSessionController extends Controller
         $request->validate([
             'username' => ['required'],
             'password' => ['required'],
-            'g-recaptcha-response' => [Rule::requiredIf(function () {return config('captcha.enabled', false);}), 'captcha'],
+            'g-recaptcha-response' => [Rule::requiredIf(function () {
+                return config('captcha.enabled', false);
+            }), 'captcha'],
         ]);
 
         $request->authenticate();
@@ -63,7 +65,7 @@ class AuthenticatedSessionController extends Controller
 
     public function show()
     {
-        if (!session('login_verify_user')) {
+        if (! session('login_verify_user')) {
             return redirect()->route('login');
         }
 
@@ -96,7 +98,7 @@ class AuthenticatedSessionController extends Controller
     {
 
         $userId = session('login_verify_user');
-        if (!$userId) {
+        if (! $userId) {
             return redirect()->route('login');
         }
 
@@ -128,7 +130,7 @@ class AuthenticatedSessionController extends Controller
 
         $token = Cache::get('verify_code_'.$user->email);
 
-        if (!$token || $token !== (int) $request->code) {
+        if (! $token || $token !== (int) $request->code) {
             return back()->withErrors(['code' => 'Invalid or expired verification code']);
         }
 

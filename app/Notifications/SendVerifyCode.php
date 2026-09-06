@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Services\WhatsAppService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -28,7 +28,22 @@ class SendVerifyCode extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return app(WhatsAppService::class)->enabled() && ! empty($notifiable->phone)
+            ? ['whatsapp']
+            : ['mail'];
+    }
+
+    /**
+     * Get the WhatsApp representation of the notification.
+     *
+     * @return array{to: string, body: string}
+     */
+    public function toWhatsApp(object $notifiable): array
+    {
+        return [
+            'to' => (string) $notifiable->phone,
+            'body' => "Your verification code is: {$this->code}",
+        ];
     }
 
     /**

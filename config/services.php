@@ -37,8 +37,13 @@ return [
 
     'whatsapp' => [
         'enabled' => (bool) env('WHATSAPP_ENABLED', false),
-        'token' => env('WHATSAPP_TOKEN'),
-        'base_url' => env('WHATSAPP_BASE_URL', 'https://waba-v2.360dialog.io'),
+        'account_sid' => env('WHATSAPP_ACCOUNT_SID'),
+        'auth_token' => env('WHATSAPP_AUTH_TOKEN'),
+        'from' => env('WHATSAPP_FROM', '14155238886'),
+        'welcome_enabled' => true,
+        'welcome_message' => 'Welcome to :site, :username! Your account has been created successfully.',
+        'confirm_enabled' => false,
+        'confirm_message' => 'Confirm your account here: :verify_link',
     ],
 
 ];

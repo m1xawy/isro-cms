@@ -190,15 +190,6 @@
                             <label class="form-check-label" for="agree_terms">{{ __('Enabled') }}</label>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label d-block">{{ __('Show Phone Number on Register') }}</label>
-                        <div class="form-check">
-                            <input type="hidden" name="register_phone" value="0">
-                            <input class="form-check-input" type="checkbox" name="register_phone" value="1"
-                                   id="register_phone" {{ !empty($settings['register_phone']) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="register_phone">{{ __('Enabled') }}</label>
-                        </div>
-                    </div>
                 </div>
 
                 {{-- ===================== MAIL ===================== --}}
@@ -299,34 +290,64 @@
                 {{-- ===================== WHATSAPP ===================== --}}
                 <div class="tab-pane fade" id="tab-whatsapp" role="tabpanel">
 
-                    <h5 class="fw-semibold mb-3">{{ __('360dialog WhatsApp API Configuration') }}</h5>
+                    <h5 class="fw-semibold mb-3">{{ __('Twilio WhatsApp API Configuration') }}</h5>
                     <p class="text-muted small mb-3">
-                        {{ __('Used to send WhatsApp messages for registration, verification codes and account updates. Get your API key from the') }}
-                        <a href="https://docs.360dialog.com" target="_blank">{{ __('360dialog Dashboard') }} &nearr;</a>.
+                        {{ __('Used to send WhatsApp messages for registration, verification codes and account updates. Get your credentials from the') }}
+                        <a href="https://console.twilio.com" target="_blank">{{ __('Twilio Console') }} &nearr;</a>.
                     </p>
 
                     <div class="mb-3">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="whatsapp_enabled"
                                 {{ !empty($whatsapp['enabled']) ? 'checked' : '' }}>
-                            <label class="form-check-label fw-semibold" for="whatsapp_enabled">{{ __('Enable WhatsApp Notifications') }}</label>
+                            <label class="form-check-label fw-semibold" for="whatsapp_enabled">{{ __('Enable WhatsApp') }}</label>
                         </div>
-                        <div class="form-text">{{ __('When disabled, no WhatsApp messages are sent after registration.') }}</div>
+                        <div class="form-text">{{ __('Used for registration sends, verification codes (update account info, update password, reset secondary password, etc.).') }}</div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">{{ __('API Key (D360-API-KEY)') }}</label>
-                        <input type="text" class="form-control" id="whatsapp_token"
-                               value="{{ $whatsapp['token'] ?? '' }}" placeholder="360dialog API key">
-                        <div class="form-text">{{ __('Your 360dialog API key. Keep this secret.') }}</div>
+                        <label class="form-label">{{ __('Account SID') }}</label>
+                        <input type="text" class="form-control" id="whatsapp_account_sid"
+                               value="{{ $whatsapp['account_sid'] ?? '' }}" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">{{ __('Environment') }}</label>
-                        <select class="form-select" id="whatsapp_base_url">
-                            <option value="https://waba-sandbox.360dialog.io/v1" {{ (($whatsapp['base_url'] ?? '') === 'https://waba-sandbox.360dialog.io/v1') ? 'selected' : '' }}>{{ __('Sandbox') }}</option>
-                            <option value="https://waba-v2.360dialog.io" {{ (($whatsapp['base_url'] ?? '') === 'https://waba-v2.360dialog.io') ? 'selected' : '' }}>{{ __('Production') }}</option>
-                        </select>
-                        <div class="form-text">{{ __('Switch between the 360dialog sandbox and production API.') }}</div>
+                        <label class="form-label">{{ __('Auth Token') }}</label>
+                        <input type="password" class="form-control" id="whatsapp_auth_token"
+                               value="{{ $whatsapp['auth_token'] ?? '' }}" placeholder="Your Twilio auth token">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ __('From (WhatsApp sender number)') }}</label>
+                        <input type="text" class="form-control" id="whatsapp_from"
+                               value="{{ $whatsapp['from'] ?? '14155238886' }}" placeholder="14155238886">
+                        <div class="form-text">{{ __('Numbers only, no +. The Twilio sandbox number is 14155238886.') }}</div>
+                    </div>
+
+                    <div class="border-top pt-3 mt-3">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="whatsapp_welcome_enabled" {{ !empty($whatsapp['welcome_enabled'] ?? true) ? 'checked' : '' }}>
+                            <label class="form-check-label fw-semibold" for="whatsapp_welcome_enabled">{{ __('Send WhatsApp welcome message') }}</label>
+                            <div class="form-text">{{ __('When on, the message below is sent after registration to users who provided a phone number.') }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('Welcome message') }}</label>
+                            <textarea class="form-control" id="whatsapp_welcome_message" rows="2"
+                                      placeholder="Welcome to :site, :username! Your account has been created successfully.">{{ $whatsapp['welcome_message'] ?? 'Welcome to :site, :username! Your account has been created successfully.' }}</textarea>
+                            <div class="form-text">{{ __('Placeholders: :site (site name), :username (new account username).') }}</div>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="whatsapp_confirm_enabled" {{ !empty($whatsapp['confirm_enabled']) ? 'checked' : '' }}>
+                            <label class="form-check-label fw-semibold" for="whatsapp_confirm_enabled">{{ __('Send register confirmation via WhatsApp') }}</label>
+                            <div class="form-text">{{ __('Replaces the email account verification with a WhatsApp verification link on registration. Requires "Register Confirmation" in the General tab.') }}</div>
+                        </div>
+
+                        <div class="mb-3 mt-2">
+                            <label class="form-label">{{ __('Confirmation message') }}</label>
+                            <textarea class="form-control" id="whatsapp_confirm_message" rows="2"
+                                      placeholder="Confirm your account here: :verify_link">{{ $whatsapp['confirm_message'] ?? 'Confirm your account here: :verify_link' }}</textarea>
+                            <div class="form-text">{{ __('Sent after registration when the register confirmation toggle is on. Placeholders: :verify_link (verification link), :site (site name), :username (new account username).') }}</div>
+                        </div>
                     </div>
 
                     <input type="hidden" id="whatsapp" name="whatsapp">
@@ -891,8 +912,13 @@
         function serializeWhatsapp() {
             document.getElementById('whatsapp').value = JSON.stringify({
                 enabled: document.getElementById('whatsapp_enabled').checked,
-                token: document.getElementById('whatsapp_token').value,
-                base_url: document.getElementById('whatsapp_base_url').value || 'https://waba-v2.360dialog.io',
+                account_sid: document.getElementById('whatsapp_account_sid').value,
+                auth_token: document.getElementById('whatsapp_auth_token').value,
+                from: document.getElementById('whatsapp_from').value,
+                welcome_enabled: document.getElementById('whatsapp_welcome_enabled').checked,
+                welcome_message: document.getElementById('whatsapp_welcome_message').value,
+                confirm_enabled: document.getElementById('whatsapp_confirm_enabled').checked,
+                confirm_message: document.getElementById('whatsapp_confirm_message').value,
             });
         }
 

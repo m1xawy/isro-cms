@@ -20,7 +20,6 @@ return [
     'register_confirm' => 0,
     'duplicate_email' => 0,
     'agree_terms' => 0,
-    'register_phone' => 0,
 
     'server' => [
         'version' => env('SRO_VERSION', 'iSRO'), // or 'vSRO'
